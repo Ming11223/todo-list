@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f4f4f9;
+        }
+
+        h1 {
+            margin: 20px 0;
+            color: #333;
+        }
+
+        .task-container {
+            width: 90%;
+            max-width: 600px;
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .task {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+
+        .task:last-child {
+            border-bottom: none;
+        }
+
+        .task-title {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .task-priority {
+            font-size: 12px;
+            margin-right: 10px;
+            padding: 2px 5px;
+            border-radius: 5px;
+        }
+
+        .priority-high {
+            background-color: #ff4d4d;
+            color: white;
+        }
+
+        .priority-medium {
+            background-color: #ffc107;
+            color: black;
+        }
+
+        .priority-low {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .task-actions button {
+            margin: 0 2px;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .edit-btn {
+            background-color: #2196f3;
+            color: white;
+        }
+
+        .delete-btn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: gray;
+        }
+
+        .add-task-form {
+            display: flex;
+            flex-direction: column;
+            width: 90%;
+            max-width: 600px;
+            margin-bottom: 20px;
+        }
+
+        .add-task-form input,
+        .add-task-form select,
+        .add-task-form button {
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .add-task-form button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        @media (max-width: 600px) {
+            .task-container {
+                width: 100%;
+            }
+
+            .add-task-form {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Task Manager</h1>
+
+    <form class="add-task-form">
+        <input type="text" id="task-title" placeholder="Task Title" required>
+        <input type="text" id="task-desc" placeholder="Task Description" required>
+        <select id="task-priority" required>
+            <option value="high">High Priority</option>
+            <option value="medium">Medium Priority</option>
+            <option value="low">Low Priority</option>
+        </select>
+        <button type="button" id="add-task-btn">Add Task</button>
+    </form>
+
+    <div id="task-list" class="task-container">
+        <!-- Task items will be appended here -->
+    </div>
+
+    <script>
+        document.getElementById('add-task-btn').addEventListener('click', () => {
+            const title = document.getElementById('task-title').value;
+            const desc = document.getElementById('task-desc').value;
+            const priority = document.getElementById('task-priority').value;
+
+            if (title && desc) {
+                addTask(title, desc, priority);
+                document.getElementById('task-title').value = '';
+                document.getElementById('task-desc').value = '';
+                document.getElementById('task-priority').value = 'medium';
+            }
+        });
+
+        function addTask(title, desc, priority) {
+            const taskList = document.getElementById('task-list');
+
+            const taskElement = document.createElement('div');
+            taskElement.classList.add('task');
+
+            const titleElement = document.createElement('p');
+            titleElement.classList.add('task-title');
+            titleElement.innerText = title;
+
+            const descElement = document.createElement('p');
+            descElement.innerText = desc;
+
+            const priorityElement = document.createElement('span');
+            priorityElement.classList.add('task-priority', `priority-${priority}`);
+            priorityElement.innerText = priority.charAt(0).toUpperCase() + priority.slice(1);
+
+            const actionsDiv = document.createElement('div');
+            actionsDiv.classList.add('task-actions');
+
+            const editButton = document.createElement('button');
+            editButton.classList.add('edit-btn');
+            editButton.innerText = 'Edit';
+            editButton.addEventListener('click', () => editTask(taskElement));
+
+            const deleteButton = document.createElement('button');
+            deleteButton.classList.add('delete-btn');
+            deleteButton.innerText = 'Delete';
+            deleteButton.addEventListener('click', () => taskElement.remove());
+
+            actionsDiv.appendChild(editButton);
+            actionsDiv.appendChild(deleteButton);
+
+            taskElement.appendChild(titleElement);
+            taskElement.appendChild(descElement);
+            taskElement.appendChild(priorityElement);
+            taskElement.appendChild(actionsDiv);
+
+            taskList.appendChild(taskElement);
+        }
+
+        function editTask(taskElement) {
+            const title = prompt('Edit Task Title:', taskElement.querySelector('.task-title').innerText);
+            const desc = prompt('Edit Task Description:', taskElement.querySelector('p:nth-child(2)').innerText);
+
+            if (title && desc) {
+                taskElement.querySelector('.task-title').innerText = title;
+                taskElement.querySelector('p:nth-child(2)').innerText = desc;
+            }
+        }
+    </script>
+</body>
+</html>
+
